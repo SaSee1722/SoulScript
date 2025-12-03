@@ -13,6 +13,8 @@ workflows:
           npm install
       - name: Build web app
         script: |
+          export VITE_SUPABASE_URL=https://trfycbnmkjijmsqhnihc.supabase.co
+          export VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRyZnljYm5ta2ppam1zcWhuaWhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3NjkyNTgsImV4cCI6MjA4MDM0NTI1OH0.cnr9w7tLeYyx0CneDdff1IgAXeXbZw1epfEI7akabSc
           npm run build
       - name: Sync Capacitor
         script: |
