@@ -387,24 +387,24 @@ const Diary = () => {
             </div>
 
             {/* Book Container */}
-            <div className="relative w-full max-w-6xl aspect-[3/2] perspective-1000">
+            <div className="relative w-full max-w-6xl md:aspect-[3/2] perspective-1000 h-[90vh] md:h-auto">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.8 }}
-                    className={`relative w-full h-full flex shadow-book rounded-r-3xl rounded-l-3xl overflow-hidden ${isDark ? 'bg-gray-800' : 'bg-[#FDFBF7]'}`}
+                    className={`relative w-full h-full flex flex-col md:flex-row shadow-book rounded-3xl overflow-hidden ${isDark ? 'bg-gray-800' : 'bg-[#FDFBF7]'}`}
                 >
 
                     {/* Left Page (Sidebar/Calendar) */}
-                    <div className={`w-1/2 h-full p-8 relative z-10 ${isDark ? 'bg-gray-800 text-gray-300' : 'bg-[#FDFBF7] text-ink'} border-r border-gray-200/20`}>
+                    <div className={`w-full md:w-1/2 h-auto md:h-full p-6 md:p-8 relative z-10 ${isDark ? 'bg-gray-800 text-gray-300' : 'bg-[#FDFBF7] text-ink'} border-b md:border-b-0 md:border-r border-gray-200/20 overflow-y-auto custom-scrollbar`}>
                         {/* Seasonal Overlay */}
                         <div className={`absolute inset-0 pointer-events-none z-0 ${currentTheme.overlay} mix-blend-multiply`} />
 
                         <div className="h-full flex flex-col relative z-10">
                             {/* Profile Section */}
-                            <div className="mb-8 flex items-center gap-4">
+                            <div className="mb-6 md:mb-8 flex items-center gap-4">
                                 <div className="relative group">
-                                    <div className="w-16 h-16 rounded-full bg-gray-200 overflow-hidden border-2 border-white shadow-md">
+                                    <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gray-200 overflow-hidden border-2 border-white shadow-md">
                                         <img src={avatarUrl} alt="User" className="w-full h-full object-cover" />
                                     </div>
                                     <label className="absolute bottom-0 right-0 p-1 bg-white rounded-full shadow-sm cursor-pointer hover:bg-gray-100 transition-colors">
@@ -413,19 +413,19 @@ const Diary = () => {
                                     </label>
                                 </div>
                                 <div>
-                                    <h3 className={`font-handwriting text-3xl ${currentTheme.accent}`}>{username}</h3>
+                                    <h3 className={`font-handwriting text-2xl md:text-3xl ${currentTheme.accent}`}>{username}</h3>
                                     <p className="text-xs opacity-60">Keep your memories alive</p>
                                 </div>
                             </div>
 
                             {/* Calendar */}
                             <div className="flex-1">
-                                <div className={`rounded-xl p-6 mb-4 shadow-inner ${isDark ? 'bg-black/20' : 'bg-white/50 backdrop-blur-sm'}`}>
-                                    <h4 className={`font-medium mb-6 flex items-center gap-2 text-lg ${currentTheme.accent}`}>
-                                        <CalendarIcon size={20} />
+                                <div className={`rounded-xl p-4 md:p-6 mb-4 shadow-inner ${isDark ? 'bg-black/20' : 'bg-white/50 backdrop-blur-sm'}`}>
+                                    <h4 className={`font-medium mb-4 md:mb-6 flex items-center gap-2 text-base md:text-lg ${currentTheme.accent}`}>
+                                        <CalendarIcon size={18} />
                                         {date.toLocaleString('default', { month: 'long', year: 'numeric' })}
                                     </h4>
-                                    <div className="grid grid-cols-7 gap-2 text-center text-sm">
+                                    <div className="grid grid-cols-7 gap-1 md:gap-2 text-center text-sm">
                                         {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
                                             <div key={i} className="h-8 flex items-center justify-center">
                                                 <span className="opacity-50 font-bold text-xs">{d}</span>
@@ -450,18 +450,18 @@ const Diary = () => {
                                                 <button
                                                     key={i}
                                                     onClick={() => handleDateChange(currentDate)}
-                                                    className={`relative h-10 w-full rounded-lg transition-all flex flex-col items-center justify-center
+                                                    className={`relative h-8 md:h-10 w-full rounded-lg transition-all flex flex-col items-center justify-center
                                                         ${isSelected ? 'bg-white shadow-md ring-2 ring-offset-2 ring-gray-200 z-10' : 'hover:bg-gray-100'}
                                                         ${isToday && !isSelected ? 'bg-blue-50 text-blue-600' : ''}
                                                     `}
                                                 >
-                                                    <span className={`text-sm ${isSelected ? 'font-bold' : ''}`}>{day}</span>
+                                                    <span className={`text-xs md:text-sm ${isSelected ? 'font-bold' : ''}`}>{day}</span>
                                                     {entryMood && (
                                                         <div className="absolute -bottom-1">
                                                             <img
                                                                 src={entryMood.image}
                                                                 alt={entryMood.label}
-                                                                className="w-4 h-4"
+                                                                className="w-3 h-3 md:w-4 md:h-4"
                                                             />
                                                         </div>
                                                     )}
@@ -472,7 +472,7 @@ const Diary = () => {
                                 </div>
                             </div>
 
-                            <div className="mt-auto flex flex-col gap-4">
+                            <div className="mt-auto flex flex-col gap-4 hidden md:flex">
                                 <button
                                     onClick={() => navigate('/memories')}
                                     className={`w-full py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-sm font-medium ${isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-white hover:bg-gray-50'}`}
@@ -491,7 +491,7 @@ const Diary = () => {
                     </div>
 
                     {/* Right Page (Writing Area) */}
-                    <div className={`w-1/2 h-full relative z-20 ${isDark ? 'bg-gray-800' : 'bg-[#FDFBF7]'} perspective-1000`}>
+                    <div className={`w-full md:w-1/2 h-full relative z-20 ${isDark ? 'bg-gray-800' : 'bg-[#FDFBF7]'} perspective-1000`}>
                         {/* Seasonal Overlay */}
                         <div className={`absolute inset-0 pointer-events-none z-0 ${currentTheme.overlay} mix-blend-multiply`} />
 
@@ -503,19 +503,19 @@ const Diary = () => {
                                     animate={{ opacity: 1, rotateY: 0 }}
                                     exit={{ opacity: 0, rotateY: pageSide === 'right' ? 15 : -15 }}
                                     transition={{ duration: 0.4 }}
-                                    className="h-full p-8 flex flex-col relative origin-left z-10"
+                                    className="h-full p-6 md:p-8 flex flex-col relative origin-left z-10"
                                 >
                                     {/* Date Header */}
-                                    <div className={`flex justify-between items-end mb-6 border-b-2 ${isDark ? 'border-gray-700' : 'border-gray-100'} pb-4`}>
+                                    <div className={`flex justify-between items-end mb-4 md:mb-6 border-b-2 ${isDark ? 'border-gray-700' : 'border-gray-100'} pb-4`}>
                                         <div>
-                                            <h2 className={`text-5xl font-handwriting mb-1 ${currentTheme.accent}`}>
+                                            <h2 className={`text-3xl md:text-5xl font-handwriting mb-1 ${currentTheme.accent}`}>
                                                 {date.toLocaleDateString('en-US', { weekday: 'long' })}
                                             </h2>
-                                            <p className="text-sm text-gray-400 uppercase tracking-widest font-medium">
+                                            <p className="text-xs md:text-sm text-gray-400 uppercase tracking-widest font-medium">
                                                 {date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                                             </p>
                                         </div>
-                                        <div className="flex gap-3 items-center">
+                                        <div className="flex gap-2 md:gap-3 items-center">
                                             {/* Mood Picker */}
                                             <div className="relative">
                                                 <button
@@ -525,7 +525,7 @@ const Diary = () => {
                                                     <img
                                                         src={mood.image}
                                                         alt={mood.label}
-                                                        className="w-10 h-10 drop-shadow-sm"
+                                                        className="w-8 h-8 md:w-10 md:h-10 drop-shadow-sm"
                                                     />
                                                 </button>
                                                 {showMoodPicker && (
@@ -550,25 +550,25 @@ const Diary = () => {
                                             </div>
 
                                             {/* Tools */}
-                                            <div className="flex items-center gap-1 bg-gray-50 rounded-full p-1.5 border border-gray-100">
+                                            <div className="flex items-center gap-1 bg-gray-50 rounded-full p-1 border border-gray-100">
                                                 <button
                                                     onClick={() => speakText(content)}
-                                                    className="p-2 hover:bg-white rounded-full transition-all text-gray-500 hover:text-gray-800 hover:shadow-sm"
+                                                    className="p-1.5 md:p-2 hover:bg-white rounded-full transition-all text-gray-500 hover:text-gray-800 hover:shadow-sm"
                                                     title="Read Aloud"
                                                 >
-                                                    <Volume2 size={18} />
+                                                    <Volume2 size={16} className="md:w-[18px] md:h-[18px]" />
                                                 </button>
 
                                                 <button
                                                     onClick={isRecording ? stopRecording : startRecording}
-                                                    className={`p-2 rounded-full transition-all ${isRecording ? 'bg-red-500 text-white animate-pulse shadow-md' : 'hover:bg-white text-gray-500 hover:text-red-500 hover:shadow-sm'}`}
+                                                    className={`p-1.5 md:p-2 rounded-full transition-all ${isRecording ? 'bg-red-500 text-white animate-pulse shadow-md' : 'hover:bg-white text-gray-500 hover:text-red-500 hover:shadow-sm'}`}
                                                     title={isRecording ? "Stop Recording" : "Start Recording"}
                                                 >
-                                                    {isRecording ? <Square size={18} fill="currentColor" /> : <Mic size={18} />}
+                                                    {isRecording ? <Square size={16} fill="currentColor" className="md:w-[18px] md:h-[18px]" /> : <Mic size={16} className="md:w-[18px] md:h-[18px]" />}
                                                 </button>
 
-                                                <label className="p-2 hover:bg-white rounded-full transition-all text-gray-500 hover:text-blue-500 hover:shadow-sm cursor-pointer">
-                                                    <ImageIcon size={18} />
+                                                <label className="p-1.5 md:p-2 hover:bg-white rounded-full transition-all text-gray-500 hover:text-blue-500 hover:shadow-sm cursor-pointer">
+                                                    <ImageIcon size={16} className="md:w-[18px] md:h-[18px]" />
                                                     <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
                                                 </label>
                                             </div>
@@ -598,7 +598,7 @@ const Diary = () => {
                                                     value={content}
                                                     onChange={(e) => setContent(e.target.value)}
                                                     placeholder="Dear Diary..."
-                                                    className={`w-full min-h-[50%] bg-transparent resize-none outline-none font-handwriting text-xl leading-[2.5rem] ${isDark ? 'text-gray-300' : 'text-gray-700'}`}
+                                                    className={`w-full min-h-[50%] bg-transparent resize-none outline-none font-handwriting text-lg md:text-xl leading-[2.5rem] ${isDark ? 'text-gray-300' : 'text-gray-700'}`}
                                                     style={{
                                                         backgroundImage: isDark
                                                             ? 'linear-gradient(transparent 95%, rgba(255, 255, 255, 0.1) 95%)'
@@ -610,7 +610,7 @@ const Diary = () => {
                                                 />
 
                                                 {/* Media Stickers Area */}
-                                                <div className="mt-6 flex flex-wrap gap-4">
+                                                <div className="mt-6 flex flex-wrap gap-4 pb-20 md:pb-0">
                                                     {/* Audio Stickers */}
                                                     {media.filter(m => m.type === 'audio').map((item) => (
                                                         <div key={item.id} className="relative group">
@@ -625,7 +625,7 @@ const Diary = () => {
                                                             </div>
                                                             <button
                                                                 onClick={(e) => { e.stopPropagation(); handleDeleteMedia(item); }}
-                                                                className="absolute -top-2 -right-2 bg-white text-red-500 border border-red-100 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity shadow-sm hover:bg-red-50"
+                                                                className="absolute -top-2 -right-2 bg-white text-red-500 border border-red-100 rounded-full p-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity shadow-sm hover:bg-red-50"
                                                             >
                                                                 <X size={12} />
                                                             </button>
@@ -640,7 +640,7 @@ const Diary = () => {
                                                                     <img src={item.url} alt="Memory" className="w-full h-full object-cover" />
                                                                     <button
                                                                         onClick={() => handleDeleteMedia(item)}
-                                                                        className="absolute top-2 right-2 bg-white/90 text-red-500 rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity shadow-sm backdrop-blur-sm"
+                                                                        className="absolute top-2 right-2 bg-white/90 text-red-500 rounded-full p-1.5 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity shadow-sm backdrop-blur-sm"
                                                                     >
                                                                         <X size={14} />
                                                                     </button>
@@ -659,15 +659,15 @@ const Diary = () => {
                                         whileTap={{ scale: 0.9 }}
                                         onClick={handleSave}
                                         disabled={isSaving || isLocked}
-                                        className={`absolute bottom-8 right-8 w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${currentTheme.button || 'bg-ink'} text-white`}
+                                        className={`absolute bottom-6 right-6 md:bottom-8 md:right-8 w-12 h-12 md:w-14 md:h-14 rounded-full shadow-xl flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${currentTheme.button || 'bg-ink'} text-white z-50`}
                                     >
-                                        {isSaving ? <Loader2 className="animate-spin" size={24} /> : <Save size={24} />}
+                                        {isSaving ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} className="md:w-6 md:h-6" />}
                                     </motion.button>
                                 </motion.div>
                             )}
                         </AnimatePresence>
 
-                        <div className="absolute top-0 left-0 w-8 h-full bg-gradient-to-r from-black/5 to-transparent pointer-events-none"></div>
+                        <div className="absolute top-0 left-0 w-8 h-full bg-gradient-to-r from-black/5 to-transparent pointer-events-none hidden md:block"></div>
                     </div>
 
                 </motion.div>
