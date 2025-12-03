@@ -147,10 +147,15 @@ const Login = () => {
                 <button
                     onClick={async () => {
                         try {
+                            const isNative = window.Capacitor && window.Capacitor.isNativePlatform();
+                            const redirectTo = isNative
+                                ? 'com.soulscript.app://closed-diary'
+                                : window.location.origin + '/closed-diary';
+
                             const { error } = await supabase.auth.signInWithOAuth({
                                 provider: 'google',
                                 options: {
-                                    redirectTo: window.location.origin + '/closed-diary'
+                                    redirectTo: redirectTo
                                 }
                             });
                             if (error) throw error;

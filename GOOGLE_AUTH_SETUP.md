@@ -3,6 +3,7 @@
 To enable the "Continue with Google" button, you need to get a **Client ID** and **Client Secret** from Google and add them to Supabase.
 
 ## Step 1: Create a Project in Google Cloud Console
+
 1. Go to the [Google Cloud Console](https://console.cloud.google.com/).
 2. Sign in with your Google account.
 3. Click the dropdown menu at the top left (next to the Google Cloud logo) and select **"New Project"**.
@@ -10,6 +11,7 @@ To enable the "Continue with Google" button, you need to get a **Client ID** and
 5. Select the project you just created.
 
 ## Step 2: Configure OAuth Consent Screen
+
 1. In the left sidebar, go to **APIs & Services > OAuth consent screen**.
 2. Select **External** (unless you are a Google Workspace user and want it internal) and click **Create**.
 3. Fill in the required App Information:
@@ -20,6 +22,7 @@ To enable the "Continue with Google" button, you need to get a **Client ID** and
 5. On the Summary page, click **Back to Dashboard**.
 
 ## Step 3: Create Credentials
+
 1. In the left sidebar, click **Credentials**.
 2. Click **+ CREATE CREDENTIALS** at the top and select **OAuth client ID**.
 3. **Application Type**: Select **Web application**.
@@ -32,10 +35,12 @@ To enable the "Continue with Google" button, you need to get a **Client ID** and
 6. Click **Create**.
 
 ## Step 4: Get Client ID and Secret
+
 1. A popup will appear with your **Client ID** and **Client Secret**.
 2. Copy these strings.
 
 ## Step 5: Add to Supabase
+
 1. Go back to your **Supabase Dashboard**.
 2. Navigate to **Authentication > Providers > Google**.
 3. Paste the **Client ID** and **Client Secret** into the respective fields.
