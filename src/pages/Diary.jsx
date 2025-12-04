@@ -25,6 +25,14 @@ const Diary = () => {
     const [username, setUsername] = useState('My Diary');
     const [avatarUrl, setAvatarUrl] = useState('https://api.dicebear.com/7.x/avataaars/svg?seed=Felix');
     const [monthEntries, setMonthEntries] = useState({}); // { 'YYYY-MM-DD': moodObject }
+    const [viewMode, setViewMode] = useState('calendar'); // 'calendar' or 'entry'
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     // Toast State
     const [toast, setToast] = useState({ isVisible: false, message: '', type: 'success' });
@@ -261,6 +269,24 @@ const Diary = () => {
         }
     };
 
+    const handlePaste = (e) => {
+        const items = e.clipboardData.items;
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf('image') !== -1) {
+                const blob = items[i].getAsFile();
+                const imageUrl = URL.createObjectURL(blob);
+                setMedia(prev => [...prev, {
+                    id: `temp-${Date.now()}`,
+                    url: imageUrl,
+                    type: 'image',
+                    blob: blob,
+                    isNew: true
+                }]);
+                e.preventDefault();
+            }
+        }
+    };
+
     const handleDateChange = (newDate) => {
         if (isFlipping) return;
         const direction = newDate > date ? 'right' : 'left';
@@ -269,6 +295,7 @@ const Diary = () => {
         setTimeout(() => {
             setDate(newDate);
             setIsFlipping(false);
+            if (isMobile) setViewMode('entry');
         }, 300);
     };
 
@@ -338,7 +365,7 @@ const Diary = () => {
     };
 
     return (
-        <div className={`min-h-screen flex items-center justify-center p-4 transition-colors duration-1000 ${currentTheme.background}`}>
+        <div className={`min-h-screen flex items-center justify-center p-4 transition-colors duration-1000 ${isDark ? 'bg-gray-950' : currentTheme.background}`}>
             <Toast
                 isVisible={toast.isVisible}
                 message={toast.message}
@@ -387,16 +414,16 @@ const Diary = () => {
             </div>
 
             {/* Book Container */}
-            <div className="relative w-full max-w-6xl md:aspect-[3/2] perspective-1000 h-[90vh] md:h-auto">
+            <div className="relative w-full max-w-6xl md:aspect-[3/2] perspective-1000 h-[90dvh] md:h-auto">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.8 }}
-                    className={`relative w-full h-full flex flex-col md:flex-row shadow-book rounded-3xl overflow-hidden ${isDark ? 'bg-gray-800' : 'bg-[#FDFBF7]'}`}
+                    className={`relative w-full h-full flex flex-col md:flex-row shadow-book rounded-3xl overflow-hidden ${isDark ? 'bg-gray-900' : 'bg-[#FDFBF7]'}`}
                 >
 
                     {/* Left Page (Sidebar/Calendar) */}
-                    <div className={`w-full md:w-1/2 h-auto md:h-full p-6 md:p-8 relative z-10 ${isDark ? 'bg-gray-800 text-gray-300' : 'bg-[#FDFBF7] text-ink'} border-b md:border-b-0 md:border-r border-gray-200/20 overflow-y-auto custom-scrollbar`}>
+                    <div className={`w-full md:w-1/2 h-full p-6 md:p-8 relative z-10 ${isDark ? 'bg-gray-900 text-gray-100' : 'bg-[#FDFBF7] text-ink'} border-b md:border-b-0 md:border-r border-gray-200/20 overflow-y-auto custom-scrollbar ${isMobile && viewMode === 'entry' ? 'hidden' : 'block'}`}>
                         {/* Seasonal Overlay */}
                         <div className={`absolute inset-0 pointer-events-none z-0 ${currentTheme.overlay} mix-blend-multiply`} />
 
@@ -413,7 +440,7 @@ const Diary = () => {
                                     </label>
                                 </div>
                                 <div>
-                                    <h3 className={`font-handwriting text-2xl md:text-3xl ${currentTheme.accent}`}>{username}</h3>
+                                    <h3 className={`font-handwriting text-2xl md:text-3xl ${isDark ? 'text-white' : currentTheme.accent}`}>{username}</h3>
                                     <p className="text-xs opacity-60">Keep your memories alive</p>
                                 </div>
                             </div>
@@ -421,7 +448,7 @@ const Diary = () => {
                             {/* Calendar */}
                             <div className="flex-1">
                                 <div className={`rounded-xl p-4 md:p-6 mb-4 shadow-inner ${isDark ? 'bg-black/20' : 'bg-white/50 backdrop-blur-sm'}`}>
-                                    <h4 className={`font-medium mb-4 md:mb-6 flex items-center gap-2 text-base md:text-lg ${currentTheme.accent}`}>
+                                    <h4 className={`font-medium mb-4 md:mb-6 flex items-center gap-2 text-base md:text-lg ${isDark ? 'text-white' : currentTheme.accent}`}>
                                         <CalendarIcon size={18} />
                                         {date.toLocaleString('default', { month: 'long', year: 'numeric' })}
                                     </h4>
@@ -472,7 +499,7 @@ const Diary = () => {
                                 </div>
                             </div>
 
-                            <div className="mt-auto flex flex-col gap-4 hidden md:flex">
+                            <div className="mt-auto flex flex-col gap-4">
                                 <button
                                     onClick={() => navigate('/memories')}
                                     className={`w-full py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-sm font-medium ${isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-white hover:bg-gray-50'}`}
@@ -482,7 +509,7 @@ const Diary = () => {
                                 </button>
 
                                 <div className={`p-4 rounded-xl border ${isDark ? 'bg-yellow-900/20 border-yellow-700/30' : 'bg-white/60 border-yellow-100/50'}`}>
-                                    <p className={`text-sm italic font-serif text-center opacity-80 ${currentTheme.accent}`}>
+                                    <p className={`text-sm italic font-serif text-center opacity-80 ${isDark ? 'text-gray-300' : currentTheme.accent}`}>
                                         "The only way to do great work is to love what you do."
                                     </p>
                                 </div>
@@ -491,7 +518,7 @@ const Diary = () => {
                     </div>
 
                     {/* Right Page (Writing Area) */}
-                    <div className={`w-full md:w-1/2 h-full relative z-20 ${isDark ? 'bg-gray-800' : 'bg-[#FDFBF7]'} perspective-1000`}>
+                    <div className={`w-full md:w-1/2 h-full relative z-20 ${isDark ? 'bg-gray-900' : 'bg-[#FDFBF7]'} perspective-1000 ${isMobile && viewMode === 'calendar' ? 'hidden' : 'block'}`}>
                         {/* Seasonal Overlay */}
                         <div className={`absolute inset-0 pointer-events-none z-0 ${currentTheme.overlay} mix-blend-multiply`} />
 
@@ -506,14 +533,24 @@ const Diary = () => {
                                     className="h-full p-6 md:p-8 flex flex-col relative origin-left z-10"
                                 >
                                     {/* Date Header */}
-                                    <div className={`flex justify-between items-end mb-4 md:mb-6 border-b-2 ${isDark ? 'border-gray-700' : 'border-gray-100'} pb-4`}>
-                                        <div>
-                                            <h2 className={`text-3xl md:text-5xl font-handwriting mb-1 ${currentTheme.accent}`}>
-                                                {date.toLocaleDateString('en-US', { weekday: 'long' })}
-                                            </h2>
-                                            <p className="text-xs md:text-sm text-gray-400 uppercase tracking-widest font-medium">
-                                                {date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-                                            </p>
+                                    <div className={`flex justify-between items-end mb-4 md:mb-6 border-b-2 ${isDark ? 'border-gray-800' : 'border-gray-100'} pb-4`}>
+                                        <div className="flex items-center gap-2">
+                                            {isMobile && (
+                                                <button
+                                                    onClick={() => setViewMode('calendar')}
+                                                    className="p-2 -ml-2 rounded-full hover:bg-gray-100/10"
+                                                >
+                                                    <ChevronLeft size={24} />
+                                                </button>
+                                            )}
+                                            <div>
+                                                <h2 className={`text-3xl md:text-5xl font-handwriting mb-1 ${isDark ? 'text-white' : currentTheme.accent}`}>
+                                                    {date.toLocaleDateString('en-US', { weekday: 'long' })}
+                                                </h2>
+                                                <p className="text-xs md:text-sm text-gray-400 uppercase tracking-widest font-medium">
+                                                    {date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                                                </p>
+                                            </div>
                                         </div>
                                         <div className="flex gap-2 md:gap-3 items-center">
                                             {/* Mood Picker */}
@@ -597,11 +634,12 @@ const Diary = () => {
                                                 <textarea
                                                     value={content}
                                                     onChange={(e) => setContent(e.target.value)}
+                                                    onPaste={handlePaste}
                                                     placeholder="Dear Diary..."
-                                                    className={`w-full min-h-[50%] bg-transparent resize-none outline-none font-handwriting text-lg md:text-xl leading-[2.5rem] ${isDark ? 'text-gray-300' : 'text-gray-700'}`}
+                                                    className={`w-full min-h-[50%] bg-transparent resize-none outline-none font-handwriting text-lg md:text-xl leading-[2.5rem] ${isDark ? 'text-gray-200' : 'text-gray-700'}`}
                                                     style={{
                                                         backgroundImage: isDark
-                                                            ? 'linear-gradient(transparent 95%, rgba(255, 255, 255, 0.1) 95%)'
+                                                            ? 'linear-gradient(transparent 95%, rgba(255, 255, 255, 0.05) 95%)'
                                                             : 'linear-gradient(transparent 95%, #E5E7EB 95%)',
                                                         backgroundSize: '100% 2.5rem',
                                                         lineHeight: '2.5rem',
