@@ -172,13 +172,15 @@ const Memories = () => {
                             <h2 className="text-5xl font-handwriting text-yellow-100">
                                 {new Date(memories[currentIndex].date).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}
                             </h2>
-                            <button
-                                onClick={() => speakText(memories[currentIndex].text)}
-                                className="p-3 bg-white/10 hover:bg-white/20 rounded-full text-white backdrop-blur-md transition-colors"
-                                title="Read Aloud"
-                            >
-                                <Volume2 size={24} />
-                            </button>
+                            {!window.Capacitor?.isNativePlatform() && (
+                                <button
+                                    onClick={() => speakText(memories[currentIndex].text)}
+                                    className="p-3 bg-white/10 hover:bg-white/20 rounded-full text-white backdrop-blur-md transition-colors"
+                                    title="Read Aloud"
+                                >
+                                    <Volume2 size={24} />
+                                </button>
+                            )}
                         </div>
                         <p className="text-xl md:text-2xl font-light leading-relaxed opacity-90 italic">
                             "{memories[currentIndex].text}"

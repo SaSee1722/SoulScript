@@ -624,13 +624,15 @@ const Diary = () => {
 
                                             {/* Tools */}
                                             <div className="flex items-center gap-1 bg-gray-50 rounded-full p-1 border border-gray-100">
-                                                <button
-                                                    onClick={() => speakText(content)}
-                                                    className="p-1.5 md:p-2 hover:bg-white rounded-full transition-all text-gray-500 hover:text-gray-800 hover:shadow-sm"
-                                                    title="Read Aloud"
-                                                >
-                                                    <Volume2 size={16} className="md:w-[18px] md:h-[18px]" />
-                                                </button>
+                                                {!window.Capacitor?.isNativePlatform() && (
+                                                    <button
+                                                        onClick={() => speakText(content)}
+                                                        className="p-1.5 md:p-2 hover:bg-white rounded-full transition-all text-gray-500 hover:text-gray-800 hover:shadow-sm"
+                                                        title="Read Aloud"
+                                                    >
+                                                        <Volume2 size={16} className="md:w-[18px] md:h-[18px]" />
+                                                    </button>
+                                                )}
 
                                                 <button
                                                     onClick={isRecording ? stopRecording : startRecording}
