@@ -4,7 +4,7 @@ create extension if not exists "uuid-ossp";
 -- Create diary_entries table
 create table diary_entries (
   id uuid default uuid_generate_v4() primary key,
-  user_id uuid references auth.users(id) not null,
+  user_id uuid references auth.users(id) on delete cascade not null,
   date date not null,
   text text,
   mood text,

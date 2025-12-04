@@ -1,6 +1,6 @@
 -- Create user_settings table for PIN
 create table user_settings (
-  user_id uuid references auth.users(id) primary key,
+  user_id uuid references auth.users(id) on delete cascade primary key,
   pin_code text,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
