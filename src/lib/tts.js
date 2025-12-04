@@ -1,12 +1,9 @@
 export const speakText = (text) => {
-    // Cancel if already speaking
-    if (window.speechSynthesis.speaking) {
-        window.speechSynthesis.cancel();
-        // If we just cancelled, give it a moment to clear before speaking again
-        setTimeout(() => speak(text), 100);
-    } else {
-        speak(text);
-    }
+    // Always cancel previous speech to ensure new text is spoken
+    window.speechSynthesis.cancel();
+
+    // Small delay to ensure cancellation takes effect
+    setTimeout(() => speak(text), 50);
 };
 
 const speak = (text) => {
@@ -51,26 +48,28 @@ const speak = (text) => {
         return voice;
     };
 
-    // Ensure voices are loaded
-    let voice = selectVoice();
-    if (!voice) {
-        // If voices aren't loaded yet, wait for the event
-        window.speechSynthesis.onvoiceschanged = () => {
-            voice = selectVoice();
-            if (voice) {
-                utterance.voice = voice;
-                // Adjust rate/pitch slightly for better naturalness if needed
-                utterance.rate = 0.9; // Slightly slower is often clearer for non-native TTS
-                utterance.pitch = 1;
-                window.speechSynthesis.speak(utterance);
-            }
-        };
-        // If they never load (some browsers), we might just let it use default
-    } else {
-        utterance.voice = voice;
-        // Adjust rate/pitch slightly for better naturalness if needed
-        utterance.rate = 0.9; // Slightly slower is often clearer for non-native TTS
+    const doSpeak = () => {
+        const voice = selectVoice();
+        if (voice) {
+            utterance.voice = voice;
+        }
+        utterance.rate = 0.9;
         utterance.pitch = 1;
+
+        utterance.onerror = (e) => {
+            console.error('Speech synthesis error:', e);
+        };
+
         window.speechSynthesis.speak(utterance);
+    };
+
+    // Ensure voices are loaded
+    if (window.speechSynthesis.getVoices().length === 0) {
+        window.speechSynthesis.onvoiceschanged = () => {
+            doSpeak();
+            window.speechSynthesis.onvoiceschanged = null; // Cleanup
+        };
+    } else {
+        doSpeak();
     }
 };

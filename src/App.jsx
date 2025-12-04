@@ -36,9 +36,18 @@ const AuthHandler = () => {
   const location = useLocation();
 
   React.useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN') {
+    // Check active session on mount
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
         if (location.pathname === '/' || location.pathname === '/login') {
+          navigate('/closed-diary');
+        }
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+        if (session && (location.pathname === '/' || location.pathname === '/login')) {
           navigate('/closed-diary');
         }
       }

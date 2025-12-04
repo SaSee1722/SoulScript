@@ -15,6 +15,14 @@ const Login = () => {
     });
     const [error, setError] = useState('');
 
+    React.useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) {
+                navigate('/closed-diary');
+            }
+        });
+    }, [navigate]);
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
         setError('');
