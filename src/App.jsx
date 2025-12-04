@@ -31,11 +31,42 @@ const AuthListener = () => {
   return <AuthHandler />;
 };
 
+import { App as CapacitorApp } from '@capacitor/app';
+
 const AuthHandler = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   React.useEffect(() => {
+    // Handle Deep Links (Mobile)
+    const setupDeepLinks = async () => {
+      CapacitorApp.addListener('appUrlOpen', async (data) => {
+        // Check if the URL contains auth tokens
+        if (data.url.includes('access_token') || data.url.includes('refresh_token')) {
+          // Extract hash from the deep link URL
+          const url = new URL(data.url);
+          const hash = url.hash.substring(1); // Remove the '#'
+          const params = new URLSearchParams(hash);
+
+          const accessToken = params.get('access_token');
+          const refreshToken = params.get('refresh_token');
+
+          if (accessToken && refreshToken) {
+            const { error } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            });
+
+            if (!error) {
+              navigate('/closed-diary');
+            }
+          }
+        }
+      });
+    };
+
+    setupDeepLinks();
+
     // Check active session on mount
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
@@ -53,7 +84,10 @@ const AuthHandler = () => {
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription.unsubscribe();
+      CapacitorApp.removeAllListeners();
+    };
   }, [navigate, location]);
 
   return null;
