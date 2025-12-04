@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import PinModal from '../components/PinModal';
+import { BookHeart } from 'lucide-react';
 
 const ClosedDiary = () => {
     const navigate = useNavigate();
@@ -98,11 +99,12 @@ const ClosedDiary = () => {
                             <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-gray-900 to-black rounded-l-sm border-r border-gray-800"></div>
 
                             {/* Title */}
-                            <div className="absolute top-1/3 left-1/2 -translate-x-1/2 text-center w-full px-8">
+                            <div className="absolute top-1/3 left-1/2 -translate-x-1/2 text-center w-full px-8 flex flex-col items-center">
+                                <BookHeart size={64} className="text-gold/80 mb-4 drop-shadow-md" strokeWidth={1.5} />
                                 <div className="text-gold/80 font-handwriting text-5xl tracking-widest drop-shadow-md mb-2">
                                     {username}'s
                                 </div>
-                                <div className="text-gold font-serif text-6xl tracking-widest drop-shadow-lg border-t border-b border-gold/30 py-4">
+                                <div className="text-gold font-serif text-6xl tracking-widest drop-shadow-lg border-t border-b border-gold/30 py-4 w-full">
                                     DIARY
                                 </div>
                             </div>

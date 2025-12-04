@@ -32,8 +32,8 @@ const AuthListener = () => {
 };
 
 const AuthHandler = () => {
-  const navigate = React.useNavigate();
-  const location = React.useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   React.useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {

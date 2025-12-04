@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar as CalendarIcon, Mic, Image as ImageIcon, Save, ChevronLeft, ChevronRight, Moon, Sun, LogOut, Play, Square, Trash2, Film, Volume2, X, Loader2, Pause, Lock, Unlock, Edit2, CloudUpload } from 'lucide-react';
+import { Calendar as CalendarIcon, Mic, Image as ImageIcon, Save, ChevronLeft, ChevronRight, Moon, Sun, LogOut, Play, Square, Trash2, Film, Volume2, X, Loader2, Pause, Lock, Unlock, Edit2, CloudUpload, Check } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useNavigate } from 'react-router-dom';
 import useVoiceRecorder from '../hooks/useVoiceRecorder';
@@ -27,6 +27,8 @@ const Diary = () => {
     const [monthEntries, setMonthEntries] = useState({}); // { 'YYYY-MM-DD': moodObject }
     const [viewMode, setViewMode] = useState('calendar'); // 'calendar' or 'entry'
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [isEditingName, setIsEditingName] = useState(false);
+    const [newName, setNewName] = useState('');
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -169,10 +171,6 @@ const Diary = () => {
                     user_id: user.id,
                     date: dateStr,
                     text: content,
-                    mood: mood.label, // Store label or emoji. Let's store label for better readability, or emoji for backward compat? 
-                    // Previous code stored emoji. Let's store emoji to be safe with existing data, 
-                    // BUT user wants stickers. I'll store the emoji as the key, and map it back to sticker.
-                    // Actually, let's store the emoji.
                     mood: mood.emoji,
                     updated_at: new Date().toISOString()
                 }, { onConflict: 'user_id, date' })
@@ -243,6 +241,22 @@ const Diary = () => {
         } catch (err) {
             console.error('Error uploading avatar:', err);
             showToast('Failed to update profile picture.', 'error');
+        }
+    };
+
+    const handleNameUpdate = async () => {
+        if (!newName.trim()) return;
+        try {
+            const { error } = await supabase.auth.updateUser({
+                data: { full_name: newName }
+            });
+            if (error) throw error;
+            setUsername(newName);
+            setIsEditingName(false);
+            showToast('Name updated successfully!', 'success');
+        } catch (err) {
+            console.error('Error updating name:', err);
+            showToast('Failed to update name.', 'error');
         }
     };
 
@@ -440,7 +454,29 @@ const Diary = () => {
                                     </label>
                                 </div>
                                 <div>
-                                    <h3 className={`font-handwriting text-2xl md:text-3xl ${isDark ? 'text-white' : currentTheme.accent}`}>{username}</h3>
+                                    {isEditingName ? (
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                type="text"
+                                                value={newName}
+                                                onChange={(e) => setNewName(e.target.value)}
+                                                className={`font-handwriting text-2xl md:text-3xl bg-transparent border-b border-gray-400 focus:outline-none w-40 ${isDark ? 'text-white' : currentTheme.accent}`}
+                                                autoFocus
+                                            />
+                                            <button onClick={handleNameUpdate} className="p-1 hover:bg-green-100 rounded-full text-green-600"><Check size={16} /></button>
+                                            <button onClick={() => setIsEditingName(false)} className="p-1 hover:bg-red-100 rounded-full text-red-600"><X size={16} /></button>
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-center gap-2 group/name">
+                                            <h3 className={`font-handwriting text-2xl md:text-3xl ${isDark ? 'text-white' : currentTheme.accent}`}>{username}</h3>
+                                            <button
+                                                onClick={() => { setNewName(username); setIsEditingName(true); }}
+                                                className="opacity-0 group-hover/name:opacity-100 transition-opacity p-1 hover:bg-black/5 rounded-full"
+                                            >
+                                                <Edit2 size={14} className="text-gray-400" />
+                                            </button>
+                                        </div>
+                                    )}
                                     <p className="text-xs opacity-60">Keep your memories alive</p>
                                 </div>
                             </div>
