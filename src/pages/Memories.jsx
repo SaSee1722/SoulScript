@@ -116,7 +116,7 @@ const Memories = () => {
             {/* Close Button */}
             <button
                 onClick={() => navigate('/diary')}
-                className="absolute top-6 right-6 z-50 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white backdrop-blur-md transition-colors"
+                className="absolute top-12 right-6 md:top-6 z-50 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white backdrop-blur-md transition-colors"
             >
                 <X size={24} />
             </button>

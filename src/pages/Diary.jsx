@@ -379,7 +379,7 @@ const Diary = () => {
     };
 
     return (
-        <div className={`min-h-screen flex items-center justify-center p-4 transition-colors duration-1000 ${isDark ? 'bg-gray-950' : currentTheme.background}`}>
+        <div className={`min-h-screen flex flex-col md:flex-row items-center justify-center p-4 transition-colors duration-1000 ${isDark ? 'bg-gray-950' : currentTheme.background}`}>
             <Toast
                 isVisible={toast.isVisible}
                 message={toast.message}
@@ -398,7 +398,7 @@ const Diary = () => {
 
 
             {/* Controls */}
-            <div className="absolute top-6 right-6 flex gap-4 z-50">
+            <div className="w-full flex justify-end gap-4 mb-4 md:absolute md:top-6 md:right-6 md:mb-0 md:w-auto z-50 pt-12 md:pt-0 px-4 md:px-0">
                 <button
                     onClick={handleCloudBackup}
                     className={`p-3 rounded-full shadow-lg transition-all ${isDark ? 'bg-gray-800 text-blue-400' : 'bg-white text-blue-500'}`}
@@ -428,7 +428,7 @@ const Diary = () => {
             </div>
 
             {/* Book Container */}
-            <div className="relative w-full max-w-6xl md:aspect-[3/2] perspective-1000 h-[90dvh] md:h-auto">
+            <div className="relative w-full max-w-6xl md:aspect-[3/2] perspective-1000 flex-1 md:h-auto min-h-0">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
